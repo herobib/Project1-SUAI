@@ -5,14 +5,10 @@ import { CameraStream } from './CameraStream.tsx';
 import type { IJoystickUpdateEvent } from 'react-joystick-component/build/lib/Joystick';
 
 import './App.css'
-// interface DropdownProps {
-//   options: string[];
-//   onSelect: (option: string) => void;
-// }
 
 
 function App() {
-  const modes = {'Пусто':'0','Ковш':'1', 'Камера':'2', 'Радар':'3', 'Манипулятор':'4'};
+  const modes = {'Пусто':'0','Ковш':'1', 'Радар':'2', 'Манипулятор':'3'};
 
   const ModuleSelect1 = (selectedMode: string) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
@@ -79,7 +75,7 @@ function App() {
       else {
         try {
           const data = JSON.parse(event.data);
-          
+          console.log(data);
         } catch (e) {
           console.log('Получен не JSON текст:', event.data);
         }
@@ -107,6 +103,11 @@ function App() {
   // Функция срабатывает, когда отпускаем джойстик
   const handleJoystickStop = () => {
     setCoordinates({ x: 0, y: 0 });
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      const command = JSON.stringify({ action: 'joistik', x: 0, y: 0});
+      wsRef.current.send(command);
+      console.log('Отправлена команда:', command);
+    }
   };
 
   return (

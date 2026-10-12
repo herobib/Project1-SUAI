@@ -39,7 +39,7 @@ export const CameraStream: React.FC<CameraStreamProps> = ({ frame, isLive }) => 
     justifyContent: 'center',
     boxSizing: 'border-box'}}>
       <div>
-        {isLive ? <span style={{ color: 'green' }}>● LIVE</span> : <span style={{ color: 'red' }}>● DISCONNECTED</span>}
+        {isLive ? <span style={{ color: 'green' }}>● CONNECTED</span> : <span style={{ color: 'red' }}>● DISCONNECTED</span>}
       </div>
       <canvas 
         ref={canvasRef}      
