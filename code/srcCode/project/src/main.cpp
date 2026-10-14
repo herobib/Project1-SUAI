@@ -1,3 +1,11 @@
+// ==============================================================================
+// Copyright (c) 2026 herobib
+// All rights reserved.
+//
+// Original repository: https://github.com/herobib/Project1-SUAI
+// For licensing information, see the LICENSE file in the repository root.
+// ==============================================================================
+
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <WiFi.h>
