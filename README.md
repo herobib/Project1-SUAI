@@ -16,4 +16,4 @@ It is educational project for SUAI. This is a tracked platform onto which variou
 # License
 The project is distributed under the **MIT License**. For more details, see the [LICENSE](LICENSE) file.
 # Acknowledgments
-I would like to express my sincere gratitude to @artemvoroninevgen-debug for the high-quality assembly, soldering, and technical debugging of the physical hardware. Thanks to your efforts, the project has been successfully brought to life in its physical, tangible form!
+I would like to express my sincere gratitude to **[@Dino_Zavr](https://github.com/artemvoroninevgen-debug)** for the high-quality assembly, soldering, and technical debugging of the physical hardware. Thanks to your efforts, the project has been successfully brought to life in its physical, tangible form!
