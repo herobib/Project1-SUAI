@@ -13,7 +13,6 @@
 #include <LittleFS.h>
 #include <Wire.h>
 
-#include "USB_STREAM.h"
 
 #define MotorA1 15
 #define MotorA2 16
@@ -22,16 +21,6 @@
 
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
-USB_STREAM *usb_cam = new USB_STREAM();
-
-void camera_frame_cb(uvc_frame_t *frame, void *user_ctx) {
-    if (frame && frame->data_bytes > 0 && ws.count() > 0) {
-        // ws.binaryAll((char*)frame->data, frame->data_bytes);
-        // ws.textAll("фото");
-        Serial.println("фото");
-    }
-}
-
 
 int moduleState[] ={0,0,0,0,0};
 float XManageInfluence=0.0f;
@@ -142,13 +131,6 @@ void setup() {
   pinMode(MotorB2,OUTPUT);
 
   delay(1000);
-  // if (!psramInit()) {
-  //       Serial.println("КРИТИЧЕСКАЯ ОШИБКА: PSRAM всё ещё не активирована компилятором!");
-  //       Serial.println("Проверьте, правильно ли прошились build_flags.");
-  //       return;
-  //   }
-  Serial.println("УРА! Внешняя память PSRAM (8MB) успешно обнаружена и работает.");
-
     if (!LittleFS.begin(true)) {
         Serial.println("LittleFS mount failed");
         return;
@@ -165,32 +147,6 @@ void setup() {
 
   server.begin();
   Serial.println("Server started");
-
-  // Serial.println("Выделение видеобуферов во внешней PSRAM...");
-    
-  //   // 55 КБ под каждый буфер — теперь видеокадр гарантированно влезет и не переполнит стек!
-  //   uint32_t buffer_size = 64 * 1024; 
-
-  // uint8_t *xferBufferA = (uint8_t *)heap_caps_malloc(buffer_size, MALLOC_CAP_INTERNAL | MALLOC_CAP_DMA);
-  // uint8_t *xferBufferB = (uint8_t *)heap_caps_malloc(buffer_size, MALLOC_CAP_INTERNAL | MALLOC_CAP_DMA);
-  // uint8_t *frameBuffer = (uint8_t *)heap_caps_malloc(buffer_size, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
-
-
-  //   if (!xferBufferA || !xferBufferB || !frameBuffer) {
-  //       Serial.println("Ошибка выделения памяти внутри PSRAM! Этого не должно происходить при 8MB.");
-  //       return; 
-  //   }
-  //   Serial.println("Память выделена успешно.");
-
-  //   // Конфигурируем камеру с автоподбором разрешения
-  //   usb_cam->uvcConfiguration(640, 480, 400000, 
-  //                            buffer_size, xferBufferA, xferBufferB, buffer_size, frameBuffer);
-    
-  //   usb_cam->uvcCamRegisterCb(&camera_frame_cb, NULL);
-
-    
-  //   usb_cam->start();
-  //   Serial.println("Системный USB Хост запущен с поддержкой 8MB памяти. Ожидаем камеру...");
 
 }
 
