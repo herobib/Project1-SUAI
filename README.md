@@ -3,7 +3,7 @@ It is educational project for SUAI. This is a tracked platform onto which variou
 # Functional
 - Remote control web-interface
 - Bucket module
-- Camera module
+- Camera module, but not work
 # Technologies and tools
 - Code: C++ Arduino framework, React TypeScript
 - 3D-models: SolidWorks2024(some 2025)
