@@ -3,6 +3,7 @@ import { Dropdown } from './Dropdown.tsx';
 import { JoistikComponent } from './Joistik.tsx'
 import { CameraStream } from './CameraStream.tsx';
 import type { IJoystickUpdateEvent } from 'react-joystick-component/build/lib/Joystick';
+import { ensureHuffman } from './huffman.ts'
 
 import './App.css'
 
@@ -58,32 +59,31 @@ function App() {
   const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Инициализируем ОДИН сокет для всего приложения
-    const ws = new WebSocket('ws://192.168.4.1/ws');
-    wsRef.current = ws;
-    ws.binaryType = 'blob'; // Важно для приема кадров
+    const ws = new WebSocket(`ws://${location.host}/camera_ws`);
+  wsRef.current = ws;
+  ws.binaryType = 'arraybuffer';
+  ws.onopen = () => {
+    setIsConnected(true);
+    ws.send(JSON.stringify({ type: 'set_camera_enabled', enabled: true }));
+  };
+   ws.onmessage = e => console.log(e.data.byteLength ?? e.data);
+  ws.onclose = () => setIsConnected(false);
 
-    ws.onopen = () => setIsConnected(true);
-    ws.onclose = () => setIsConnected(false);
+  ws.onmessage = (event) => {
+    if (!(event.data instanceof ArrayBuffer)) return;
+    const buf = event.data;
+    const HEADER = 16;
+    if (buf.byteLength <= HEADER) return;
+    const dv = new DataView(buf);
+    if (dv.getUint8(0) !== 0x43 || dv.getUint8(1) !== 1) return;   // 'C', версия 1
+    const len = dv.getUint32(4, true);
+    if (len + HEADER !== buf.byteLength) return;
+    const jpeg = ensureHuffman(new Uint8Array(buf, HEADER, len));
+    setLatestFrame(new Blob([jpeg as BlobPart], { type: 'image/jpeg' }));
+  };
 
-    ws.onmessage = (event) => {
-      // 1. РАСПРЕДЕЛЯЕМ ДАННЫЕ: Если пришел бинарник — это кадр камеры
-      if (event.data instanceof Blob) {
-        setLatestFrame(event.data);
-      } 
-      // 2. Если пришел текст — это данные с ESP32
-      else {
-        try {
-          const data = JSON.parse(event.data);
-          console.log(data);
-        } catch (e) {
-          console.log('Получен не JSON текст:', event.data);
-        }
-      }
-    };
-
-    return () => ws.close();
-  }, []);
+  return () => ws.close();
+}, []);
 
   const handleJoystickMove = (event: IJoystickUpdateEvent) => {
     if (event.x !== null && event.y !== null) {
