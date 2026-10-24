@@ -2,7 +2,7 @@ dependencies:
   captive_dns:
     dependencies: []
     source:
-      path: ../../../common_components/captive_dns
+      path: ../../common_components/captive_dns
       type: local
     version: '*'
   espressif/cjson:
@@ -104,6 +104,6 @@ direct_dependencies:
 - espressif/usb_host_uac
 - espressif/usb_host_uvc
 - idf
-manifest_hash: 8b4e5c97e02094d619966fe2009bd28aae203d376fbb38e1edb4919a85162336
+manifest_hash: ffb5d31dd62f1710ed37d2dd1d9acc6f061a27f7b385e842f0a3c0f1f95ab8b7
 target: esp32s3
 version: 3.0.0

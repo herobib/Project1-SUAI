@@ -10,18 +10,18 @@ if(NOT EXISTS "C:/esp/v6.1/esp-idf/components/bootloader/subproject")
   file(MAKE_DIRECTORY "C:/esp/v6.1/esp-idf/components/bootloader/subproject")
 endif()
 file(MAKE_DIRECTORY
-  "C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader"
-  "C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader-prefix"
-  "C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader-prefix/tmp"
-  "C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader-prefix/src/bootloader-stamp"
-  "C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader-prefix/src"
-  "C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader-prefix/src/bootloader-stamp"
+  "C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader"
+  "C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader-prefix"
+  "C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader-prefix/tmp"
+  "C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader-prefix/src/bootloader-stamp"
+  "C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader-prefix/src"
+  "C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader-prefix/src/bootloader-stamp"
 )
 
 set(configSubDirs )
 foreach(subDir IN LISTS configSubDirs)
-    file(MAKE_DIRECTORY "C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader-prefix/src/bootloader-stamp/${subDir}")
+    file(MAKE_DIRECTORY "C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader-prefix/src/bootloader-stamp/${subDir}")
 endforeach()
 if(cfgdir)
-  file(MAKE_DIRECTORY "C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader-prefix/src/bootloader-stamp${cfgdir}") # cfgdir has leading slash
+  file(MAKE_DIRECTORY "C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader-prefix/src/bootloader-stamp${cfgdir}") # cfgdir has leading slash
 endif()

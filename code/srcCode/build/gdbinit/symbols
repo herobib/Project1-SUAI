@@ -13,8 +13,8 @@ end
 
 # Load bootloader symbols
 set confirm off
-    add-symbol-file C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader/bootloader.elf
+    add-symbol-file C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader/bootloader.elf
 set confirm on
 
 # Load application symbols
-file C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/usb_camera_mic_spk.elf
+file C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/usb_camera_mic_spk.elf

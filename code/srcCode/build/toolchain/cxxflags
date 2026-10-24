@@ -3,5 +3,5 @@
 -fno-builtin-memset
 -fno-builtin-bzero
 -mdisable-hardware-atomics
-"-specs=C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/specs/picolibc.specs"
+"-specs=C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/specs/picolibc.specs"
 -fno-rtti

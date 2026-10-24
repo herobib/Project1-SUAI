@@ -17,4 +17,4 @@ set confirm off
 set confirm on
 
 # Load application symbols
-file C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader/bootloader.elf
+file C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader/bootloader.elf

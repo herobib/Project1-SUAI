@@ -1,2 +1,2 @@
-source C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader/gdbinit/symbols
-source C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader/gdbinit/connect
+source C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader/gdbinit/symbols
+source C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader/gdbinit/connect

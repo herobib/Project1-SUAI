@@ -1,4 +1,4 @@
-/* * Data converted from C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 #if !defined (__APPLE__) && !defined (__linux__)

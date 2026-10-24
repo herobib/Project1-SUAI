@@ -1,13 +1,13 @@
 # Target labels
  bootloader
 # Source files and their labels
-C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/CMakeFiles/bootloader
-C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/CMakeFiles/bootloader.rule
-C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/CMakeFiles/bootloader-complete.rule
-C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
-C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
-C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
-C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
-C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
-C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
-C:/Users/herobib/Desktop/cameraexcemple/esp-iot-solution/examples/usb/host/usb_camera_mic_spk/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
+C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/CMakeFiles/bootloader
+C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/CMakeFiles/bootloader.rule
+C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/CMakeFiles/bootloader-complete.rule
+C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
