@@ -1,3 +1,10 @@
+// ==============================================================================
+// Copyright (c) 2026 herobib. All rights reserved.
+//
+// This file is part of the Modular Track Platform (MTP) project.
+// Original repository: https://github.com/herobib/Project1-SUAI
+// ==============================================================================
+
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>

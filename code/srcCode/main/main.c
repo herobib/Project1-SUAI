@@ -1,8 +1,10 @@
-/*
- * SPDX-FileCopyrightText: 2026 Espressif Systems (Shanghai) CO LTD
- *
- * SPDX-License-Identifier: Apache-2.0
- */
+// ==============================================================================
+// Based on example code by Espressif Systems (Shanghai) CO LTD (Licensed under Apache 2.0).
+// Modifications and integration for MTP project: Copyright (c) 2026 herobib.
+// 
+// Original repository: https://github.com/herobib/Project1-SUAI
+// ==============================================================================
+
 #include <string.h>
 #include <stdio.h>
 #include "esp_log.h"

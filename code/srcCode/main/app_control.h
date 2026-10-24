@@ -1,3 +1,10 @@
+// ==============================================================================
+// Copyright (c) 2026 herobib. All rights reserved.
+//
+// This file is part of the Modular Track Platform (MTP) project.
+// Original repository: https://github.com/herobib/Project1-SUAI
+// ==============================================================================
+
 #pragma once
 #include <stddef.h>
 #include "esp_err.h"
