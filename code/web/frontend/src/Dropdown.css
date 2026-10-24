@@ -1,0 +1,78 @@
+.dropdown-container, .dropdown-container * {
+  box-sizing: border-box;
+}
+
+.dropdown-container {
+  position: relative; /* Важно: чтобы меню позиционировалось относительно этой обертки */
+  display: inline-block;
+  vertical-align: top; 
+  width: 100px;
+}
+
+.dropdown-button {
+  width: 100%;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 2.5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  white-space: nowrap;      /* Запрещаем тексту переноситься на новую строку */
+  overflow: hidden;         /* Прячем всё, что не помещается в ширину кнопки */
+  text-overflow: ellipsis;
+}
+.dropdown-text {
+  flex-grow: 1;             /* Занимает всю ширину, кроме места под стрелку */
+  text-align: left;         /* Выравнивание текста по левому краю */
+  
+  white-space: nowrap;      /* Запрет переноса на вторую строку */
+  overflow: hidden;         /* Прячем то, что не влезло */
+  text-overflow: ellipsis;  /* Рисуем красивое троеточие (...) */
+}
+.dropdown-button:hover {
+  background-color: #444;
+}
+
+.arrow {
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+.arrow.open {
+  transform: rotate(180deg); /* Поворачиваем стрелочку при открытии */
+}
+
+.dropdown-menu {
+  position: absolute; /* Меню "всплывает" над остальным контентом */
+  top: 105%; /* Чуть ниже кнопки */
+  left: 0;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  z-index: 1000; /* Чтобы меню было поверх всех других блоков */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  max-height: 100px;
+  overflow-y: auto; /* Если элементов много, появится прокрутка */
+}
+
+.dropdown-item {
+  padding: 1px 1px;
+  color: #333;
+  cursor: pointer;
+  font-size: 12px;
+  max-height: 25px;
+  white-space: nowrap;      /* Запрещаем тексту переноситься на новую строку */
+  overflow: hidden;         /* Прячем всё, что не помещается в ширину кнопки */
+  text-overflow: ellipsis;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+}
