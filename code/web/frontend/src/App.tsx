@@ -9,7 +9,7 @@ import './App.css'
 
 
 function App() {
-  const modes = {'Пусто':'0','Ковш':'1', 'Радар':'2', 'Манипулятор':'3'};
+  const modes = {'Пусто':'0','Ковш':'1', 'Манипулятор':'2'};
 
   const ModuleSelect1 = (selectedMode: string) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {

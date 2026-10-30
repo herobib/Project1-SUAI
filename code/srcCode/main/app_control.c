@@ -15,7 +15,7 @@
 
 static const char *TAG = "app_control";
 
-static const int s_pins[4] = {15, 16, 18, 17};   // A1, A2, B1, B2
+static const int s_pins[4] = {15, 16, 17, 18};   // A1, A2, B1, B2
 static int s_module_state[5];
 
 esp_err_t app_control_init(void)
