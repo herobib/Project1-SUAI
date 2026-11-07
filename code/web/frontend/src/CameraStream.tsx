@@ -9,7 +9,6 @@ export const CameraStream: React.FC<CameraStreamProps> = ({ frame, isLive }) => 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    // Если кадра нет — ничего не делаем
     if (!frame) return;
 
     const img = new Image();
@@ -38,9 +37,6 @@ export const CameraStream: React.FC<CameraStreamProps> = ({ frame, isLive }) => 
     alignItems: 'center',
     justifyContent: 'center',
     boxSizing: 'border-box'}}>
-      <div>
-        {isLive ? <span style={{ color: 'green' }}>● CONNECTED</span> : <span style={{ color: 'red' }}>● DISCONNECTED</span>}
-      </div>
       <canvas 
         ref={canvasRef}      
         style={{ 

@@ -7,8 +7,16 @@ import { ensureHuffman } from './huffman.ts'
 
 import './App.css'
 
-
 function App() {
+
+  const MaxAngle1=180
+  const MinAngle1=0
+  const MaxAngle2=180
+  const MinAngle2=0
+  const MaxAngle3=180
+  const MinAngle3=0
+
+
   const modes = {'Пусто':'0','Ковш':'1', 'Манипулятор':'2'};
 
   const ModuleSelect1 = (selectedMode: string) => {
@@ -17,6 +25,20 @@ function App() {
       wsRef.current.send(command);
       console.log('Отправлена команда:', command);
     }
+    if(selectedMode=='Манипулятор'){
+        setManipulatorConnected(prevState => {
+          const newState = [...prevState];
+          newState[0] = true;
+          return newState;
+        });
+      }
+      else{
+        setManipulatorConnected(prevState => {
+          const newState = [...prevState];
+          newState[0] = false;
+          return newState;
+        });
+      };
     console.log('1, режим:', modes[selectedMode as keyof typeof modes]);
   };
   const ModuleSelect2 = (selectedMode: string) => {
@@ -25,15 +47,43 @@ function App() {
       wsRef.current.send(command);
       console.log('Отправлена команда:', command);
     }
+    if(selectedMode=='Манипулятор'){
+        setManipulatorConnected(prevState => {
+          const newState = [...prevState];
+          newState[1] = true;
+          return newState;
+        });
+      }
+      else{
+        setManipulatorConnected(prevState => {
+          const newState = [...prevState];
+          newState[1] = false;
+          return newState;
+        });
+      };
     console.log('2, режим:', modes[selectedMode as keyof typeof modes]);
   };
-
+  
   const ModuleSelect3 = (selectedMode: string) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       const command = JSON.stringify({ action: 'drop3', value: modes[selectedMode as keyof typeof modes] });
       wsRef.current.send(command);
       console.log('Отправлена команда:', command);
     }
+    if(selectedMode=='Манипулятор'){
+        setManipulatorConnected(prevState => {
+          const newState = [...prevState];
+          newState[2] = true;
+          return newState;
+        });
+      }
+      else{
+        setManipulatorConnected(prevState => {
+          const newState = [...prevState];
+          newState[2] = false;
+          return newState;
+        });
+      };
     console.log('3, режим:', modes[selectedMode as keyof typeof modes]);
   };
   const ModuleSelect4 = (selectedMode: string) => {
@@ -42,6 +92,20 @@ function App() {
       wsRef.current.send(command);
       console.log('Отправлена команда:', command);
     }
+    if(selectedMode=='Манипулятор'){
+        setManipulatorConnected(prevState => {
+          const newState = [...prevState];
+          newState[3] = true;
+          return newState;
+        });
+      }
+      else{
+        setManipulatorConnected(prevState => {
+          const newState = [...prevState];
+          newState[3] = false;
+          return newState;
+        });
+      };
     console.log('4, режим:', modes[selectedMode as keyof typeof modes]);
   };
   const ModuleSelect5 = (selectedMode: string) => {
@@ -50,13 +114,34 @@ function App() {
       wsRef.current.send(command);
       console.log('Отправлена команда:', command);
     }
-    console.log('5, режим:', modes[selectedMode as keyof typeof modes]);
+    if(selectedMode=='Манипулятор'){
+        setManipulatorConnected(prevState => {
+          const newState = [...prevState];
+          newState[4] = true;
+          return newState;
+        });
+      }
+      else{
+        setManipulatorConnected(prevState => {
+          const newState = [...prevState];
+          newState[4] = false;
+          return newState;
+        });
+      };
+    console.log('режим:', modes[selectedMode as keyof typeof modes]);
   };
   
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [latestFrame, setLatestFrame] = useState<Blob | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
+  const [manipulatorConnected,setManipulatorConnected]= useState<boolean[]>([false,false,false,false,false]);
+  const [manAngle1,SetManAngle1]=useState<number>(MaxAngle1-MinAngle1);
+  const [manAngle2,SetManAngle2]=useState<number>(MaxAngle2-MinAngle2);
+  const [manAngle3,SetManAngle3]=useState<number>(MaxAngle3-MinAngle3);
+  const [horizontalEnState,SetHorizontalState]=useState<boolean>(false);
+  const [compressState,SetCompressState]=useState<boolean>(false);
+
 
   useEffect(() => {
     const ws = new WebSocket(`ws://${location.host}/camera_ws`);
@@ -75,7 +160,7 @@ function App() {
     const HEADER = 16;
     if (buf.byteLength <= HEADER) return;
     const dv = new DataView(buf);
-    if (dv.getUint8(0) !== 0x43 || dv.getUint8(1) !== 1) return;   // 'C', версия 1
+    if (dv.getUint8(0) !== 0x43 || dv.getUint8(1) !== 1) return;
     const len = dv.getUint32(4, true);
     if (len + HEADER !== buf.byteLength) return;
     const jpeg = ensureHuffman(new Uint8Array(buf, HEADER, len));
@@ -109,33 +194,137 @@ function App() {
       console.log('Отправлена команда:', command);
     }
   };
-
+  const handleCheckBoxClick = () => {
+    console.log('CheckBox clicked');
+  }
+  const manAngle1Handler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.target.valueAsNumber;
+    if(horizontalEnState){
+      const a3=360-MinAngle1-nextValue-MinAngle2-manAngle2-MinAngle3;
+      if (a3 >= MinAngle3 && a3 <= MaxAngle3) {
+        SetManAngle3(a3);
+        SetManAngle1(nextValue);
+      } else {
+        event.target.value = String(manAngle1);
+      }
+    }
+    else{
+      SetManAngle1(event.target.valueAsNumber);
+    }
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      const command = JSON.stringify({ action: 'man1', angle:{manAngle1}});
+      wsRef.current.send(command);
+      console.log('Отправлена команда:', command);
+      if(horizontalEnState){
+        const command = JSON.stringify({ action: 'man3', angle:{manAngle3}});
+        wsRef.current.send(command);
+        console.log('Отправлена команда:', command);
+      }
+    }
+  };
+  const manAngle2Handler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.target.valueAsNumber;
+    if(horizontalEnState){
+      const a3=360-MinAngle1-manAngle1-MinAngle2-nextValue-MinAngle3;
+      if (a3 >= MinAngle3 && a3 <= MaxAngle3) {
+        SetManAngle3(a3);
+        SetManAngle2(nextValue);
+      } else {
+        event.target.value = String(manAngle2);
+      }
+    }
+    else{
+      SetManAngle2(event.target.valueAsNumber);
+    }
+     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      const command = JSON.stringify({ action: 'man2', angle:{manAngle2}});
+      wsRef.current.send(command);
+      console.log('Отправлена команда:', command);
+      if(horizontalEnState){
+        const command = JSON.stringify({ action: 'man3', angle:{manAngle3}});
+        wsRef.current.send(command);
+        console.log('Отправлена команда:', command);
+      }
+    }
+  };
+  const manAngle3Handler = (event: React.ChangeEvent<HTMLInputElement>) => {
+     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      const command = JSON.stringify({ action: 'man3', angle:{manAngle3}});
+      wsRef.current.send(command);
+      console.log('Отправлена команда:', command);
+    }
+    SetManAngle3(event.target.valueAsNumber);
+  };
+  const horizontalEnStatehandler=(event: React.ChangeEvent<HTMLInputElement>) => {
+    SetHorizontalState(event.target.checked)
+    console.log("horizontal press")
+  };
+  const compressStatehandler=() => {
+    SetCompressState(!compressState)
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      const command = JSON.stringify({ action: 'compress', state:{compressState}});
+      wsRef.current.send(command);
+      console.log('Отправлена команда:', command);
+    }
+    console.log("comperss click")
+  };
   return (
     <>
      <div>
       <div className="header">
-        <div className="changeTool">
-          <p className="textfont">модуль 1:</p>
-          <Dropdown options={Object.keys(modes)} onSelect={ModuleSelect1} />
+        <div className="StatusBar">
+          <p className="statusText">status: {isConnected ? 'connected' : 'disconnected'}</p>
         </div>
-        <div className="changeTool">
-          <p className="textfont">модуль 2:</p>
-          <Dropdown options={Object.keys(modes)} onSelect={ModuleSelect2} />
-        </div>
-        <div className="changeTool">
-          <p className="textfont">модуль 3:</p>
-          <Dropdown options={Object.keys(modes)} onSelect={ModuleSelect3} />
-        </div>
-        <div className="changeTool">
-          <p className="textfont">модуль 4:</p>
-          <Dropdown options={Object.keys(modes)} onSelect={ModuleSelect4} />
-        </div>
-        <div className="changeTool">
-          <p className="textfont">модуль 5:</p>
-          <Dropdown options={Object.keys(modes)} onSelect={ModuleSelect5} />
+        <div className="ToolBar">
+          <div className="changeTool">
+            <p className="textfont">модуль 1:</p>
+            <Dropdown options={Object.keys(modes)} onSelect={ModuleSelect1} />
+          </div>
+          <div className="changeTool">
+            <p className="textfont">модуль 2:</p>
+            <Dropdown options={Object.keys(modes)} onSelect={ModuleSelect2} />
+          </div>
+          <div className="changeTool">
+            <p className="textfont">модуль 3:</p>
+            <Dropdown options={Object.keys(modes)} onSelect={ModuleSelect3} />
+          </div>
+          <div className="changeTool">
+            <p className="textfont">модуль 4:</p>
+            <Dropdown options={Object.keys(modes)} onSelect={ModuleSelect4} />
+          </div>
+          <div className="changeTool">
+            <p className="textfont">модуль 5:</p>
+            <Dropdown options={Object.keys(modes)} onSelect={ModuleSelect5} />
+          </div>
         </div>
       </div>
       <div className="mainDiv">
+        {manipulatorConnected.some((v)=> v) ? 
+        <div className="manipulatorDiv">
+          <div className="manipulatorControl">
+            <div style={{margin:'10px',minWidth:'28px'}}>
+              <input value={manAngle1} onChange={manAngle1Handler} className="range" type="range" min="0" max="180"/>
+              <p style={{color:'black', fontSize:'18px'}}>{manAngle1}</p>
+            </div>
+            <div style={{margin:'10px',minWidth:'28px'}}>
+              <input value={manAngle2} onChange={manAngle2Handler} className="range" type="range" min="0" max="180"/>
+              <p style={{color:'black', fontSize:'18px'}}>{manAngle2}</p>
+            </div>
+            <div style={{margin:'10px',minWidth:'28px'}}>
+              <input value={manAngle3} onChange={manAngle3Handler}className="range" type="range" min="0" max="180" disabled={horizontalEnState}/>
+              <p style={{color:'black', fontSize:'18px'}}>{manAngle3}</p>
+            </div>
+          </div>
+          <div className="manipulatorFeacheDiv">
+            <div style={{display:'flex', flexDirection:'row'}}>
+              <input checked={horizontalEnState} onChange={horizontalEnStatehandler} type="checkbox"/>
+              <p style={{color:'black', fontSize:'15px'}}>Горизонталь</p>
+            </div>  
+            <button className='compressButton' onClick={compressStatehandler}>{compressState ? "Сжать":"Разжать"}
+            </button>         
+          </div>
+        </div>
+        :null}
         <div className="cameraDiv">
           <CameraStream frame={latestFrame} isLive={isConnected}/>
         </div>
