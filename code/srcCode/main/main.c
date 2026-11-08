@@ -15,6 +15,7 @@
 #include "app_wifi.h"
 #include "app_web.h"
 #include "app_control.h"
+#include "servo_control.h"
 
 static const char *TAG = "uac_mic_spk_demo";
 
@@ -31,7 +32,9 @@ void app_main(void)
         ESP_LOGE(TAG, "NVS init failed: %s", esp_err_to_name(ret));
         return;
     }
+
     ESP_ERROR_CHECK(app_control_init());
+    ESP_ERROR_CHECK(servo_control_init());
     ESP_ERROR_CHECK(app_usb_host_start());
     ESP_ERROR_CHECK(app_uvc_manager_start());
     ESP_ERROR_CHECK(app_uac_manager_start());

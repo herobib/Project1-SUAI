@@ -15,7 +15,8 @@ function App() {
   const MinAngle2=0
   const MaxAngle3=180
   const MinAngle3=0
-
+  const MinCamAngle=0
+  const MaxCamAngle=270
 
   const modes = {'Пусто':'0','Ковш':'1', 'Манипулятор':'2'};
 
@@ -136,9 +137,10 @@ function App() {
   const wsRef = useRef<WebSocket | null>(null);
   const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
   const [manipulatorConnected,setManipulatorConnected]= useState<boolean[]>([false,false,false,false,false]);
-  const [manAngle1,SetManAngle1]=useState<number>(MaxAngle1-MinAngle1);
-  const [manAngle2,SetManAngle2]=useState<number>(MaxAngle2-MinAngle2);
-  const [manAngle3,SetManAngle3]=useState<number>(MaxAngle3-MinAngle3);
+  const [manAngle1,SetManAngle1]=useState<number>((MaxAngle1-MinAngle1)/2);
+  const [manAngle2,SetManAngle2]=useState<number>((MaxAngle2-MinAngle2)/2);
+  const [manAngle3,SetManAngle3]=useState<number>((MaxAngle3-MinAngle3)/2);
+  const [camAngle,SetCanAngle]=useState<number>((MaxCamAngle-MinCamAngle)/2);
   const [horizontalEnState,SetHorizontalState]=useState<boolean>(false);
   const [compressState,SetCompressState]=useState<boolean>(false);
 
@@ -212,11 +214,11 @@ function App() {
       SetManAngle1(event.target.valueAsNumber);
     }
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'man1', angle:{manAngle1}});
+      const command = JSON.stringify({ action: 'man1', angle:manAngle1});
       wsRef.current.send(command);
       console.log('Отправлена команда:', command);
       if(horizontalEnState){
-        const command = JSON.stringify({ action: 'man3', angle:{manAngle3}});
+        const command = JSON.stringify({ action: 'man3', angle:manAngle3});
         wsRef.current.send(command);
         console.log('Отправлена команда:', command);
       }
@@ -237,11 +239,11 @@ function App() {
       SetManAngle2(event.target.valueAsNumber);
     }
      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'man2', angle:{manAngle2}});
+      const command = JSON.stringify({ action: 'man2', angle:manAngle2});
       wsRef.current.send(command);
       console.log('Отправлена команда:', command);
       if(horizontalEnState){
-        const command = JSON.stringify({ action: 'man3', angle:{manAngle3}});
+        const command = JSON.stringify({ action: 'man3', angle:manAngle3});
         wsRef.current.send(command);
         console.log('Отправлена команда:', command);
       }
@@ -249,11 +251,19 @@ function App() {
   };
   const manAngle3Handler = (event: React.ChangeEvent<HTMLInputElement>) => {
      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'man3', angle:{manAngle3}});
+      const command = JSON.stringify({ action: 'man3', angle:manAngle3});
       wsRef.current.send(command);
       console.log('Отправлена команда:', command);
     }
     SetManAngle3(event.target.valueAsNumber);
+  };
+  const camAngleHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      const command = JSON.stringify({ action: 'cam', angle:camAngle});
+      wsRef.current.send(command);
+      console.log('Отправлена команда:', command);
+    }
+    SetCanAngle(event.target.valueAsNumber);
   };
   const horizontalEnStatehandler=(event: React.ChangeEvent<HTMLInputElement>) => {
     SetHorizontalState(event.target.checked)
@@ -262,7 +272,7 @@ function App() {
   const compressStatehandler=() => {
     SetCompressState(!compressState)
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'compress', state:{compressState}});
+      const command = JSON.stringify({ action: 'compress', state:compressState});
       wsRef.current.send(command);
       console.log('Отправлена команда:', command);
     }
@@ -302,16 +312,16 @@ function App() {
         {manipulatorConnected.some((v)=> v) ? 
         <div className="manipulatorDiv">
           <div className="manipulatorControl">
-            <div style={{margin:'10px',minWidth:'28px'}}>
-              <input value={manAngle1} onChange={manAngle1Handler} className="range" type="range" min="0" max="180"/>
+            <div style={{margin:'10px',minWidth:'30px'}}>
+              <input value={manAngle1} onChange={manAngle1Handler} className="range" type="range" min={MinAngle1} max={MaxAngle1}/>
               <p style={{color:'black', fontSize:'18px'}}>{manAngle1}</p>
             </div>
-            <div style={{margin:'10px',minWidth:'28px'}}>
-              <input value={manAngle2} onChange={manAngle2Handler} className="range" type="range" min="0" max="180"/>
+            <div style={{margin:'10px',minWidth:'30px'}}>
+              <input value={manAngle2} onChange={manAngle2Handler} className="range" type="range" min={MinAngle2} max={MaxAngle2}/>
               <p style={{color:'black', fontSize:'18px'}}>{manAngle2}</p>
             </div>
-            <div style={{margin:'10px',minWidth:'28px'}}>
-              <input value={manAngle3} onChange={manAngle3Handler}className="range" type="range" min="0" max="180" disabled={horizontalEnState}/>
+            <div style={{margin:'10px',minWidth:'30px'}}>
+              <input value={manAngle3} onChange={manAngle3Handler}className="range" type="range" min={MinAngle3} max={MaxAngle3} disabled={horizontalEnState}/>
               <p style={{color:'black', fontSize:'18px'}}>{manAngle3}</p>
             </div>
           </div>
@@ -326,6 +336,7 @@ function App() {
         </div>
         :null}
         <div className="cameraDiv">
+          <input value={camAngle} onChange={camAngleHandler} type="range" className="range" style={{minWidth:"30px"}} min={MinCamAngle} max={MaxCamAngle}  />
           <CameraStream frame={latestFrame} isLive={isConnected}/>
         </div>
         <div className="joistikDiv">

@@ -43203,6 +43203,13 @@
                 "type": "menu"
             },
             {
+                "children": [],
+                "depends_on": null,
+                "id": "component-config-pca9685-esp-idf-driver-C:-Users-herobib-Desktop-Project1-SUAI-code-srcCode-components-pca9685-Kconfig-1",
+                "title": "PCA9685 ESP-IDF Driver",
+                "type": "menu"
+            },
+            {
                 "children": [
                     {
                         "children": [],

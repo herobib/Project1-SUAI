@@ -217,3 +217,5 @@ $<TARGET_FILE:__idf_captive_dns>
 $<TARGET_FILE:__idf_espressif__cjson>
 $<TARGET_FILE:__idf_espressif__usb_host_uac>
 $<TARGET_FILE:__idf_espressif__usb_host_uvc>
+$<TARGET_FILE:idf::pca9685>
+$<TARGET_FILE:__idf_driver>

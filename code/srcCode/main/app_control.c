@@ -12,11 +12,16 @@
 #include "cJSON.h"
 #include "esp_log.h"
 #include "app_control.h"
+#include "servo_control.h"
 
 static const char *TAG = "app_control";
 
 static const int s_pins[4] = {15, 16, 17, 18};   // A1, A2, B1, B2
 static int s_module_state[5];
+static int manipulator_angle[3];
+static bool compres;
+static int manPortId=-1;
+static int camAngle=-1;
 
 esp_err_t app_control_init(void)
 {
@@ -98,7 +103,32 @@ void app_control_handle_text(const char *data, size_t len)
             int val = cJSON_IsString(v) ? atoi(v->valuestring)
                     : cJSON_IsNumber(v) ? v->valueint : 0;
             s_module_state[act[4] - '1'] = val;
+            if(val==2){
+                manipulator_angle[0] = 0;
+                manipulator_angle[1] = 0;
+                manipulator_angle[2] = 0;
+                manPortId=act[4]-'1';
+            }
             ESP_LOGI(TAG, "module %c = %d", act[4], val);
+        } else if (strncmp(act, "man", 3) == 0 && act[3] >= '1' && act[3] <= '3' && act[4] == '\0') {
+            const cJSON *v = cJSON_GetObjectItem(root, "angle");
+            int Id=atoi(&act[3]);
+            int val = cJSON_IsString(v) ? atoi(v->valuestring)
+                    : cJSON_IsNumber(v) ? v->valueint : -1;
+            manipulator_angle[Id - 1] = val;
+            ESP_LOGI(TAG, "manipulator angles: %d %d %d", manipulator_angle[0], manipulator_angle[1], manipulator_angle[2]);
+            servo_set_possition(manPortId, manipulator_angle, compres);
+        } else if (strcmp(act, "compress")==0) {
+            const cJSON *v = cJSON_GetObjectItem(root, "state");
+            compres=cJSON_IsTrue(v);
+            servo_set_possition(manPortId, manipulator_angle, compres);
+            ESP_LOGI(TAG, "compress: %d", compres);
+        } else if(strcmp(act, "cam")==0) {
+            const cJSON *v = cJSON_GetObjectItem(root, "angle");
+            camAngle=cJSON_IsString(v) ? atoi(v->valuestring)
+                    : cJSON_IsNumber(v) ? v->valueint : -1;
+            //поворот сервы. и поворот картинки
+            ESP_LOGI(TAG, "camAngle: %d", camAngle);
         }
     }
     cJSON_Delete(root);

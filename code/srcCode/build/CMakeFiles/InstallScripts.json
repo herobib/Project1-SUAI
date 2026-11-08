@@ -178,7 +178,8 @@
 		"C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/esp-idf/espressif__cmake_utilities/cmake_install.cmake",
 		"C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/esp-idf/espressif__usb_host_uac/cmake_install.cmake",
 		"C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/esp-idf/espressif__usb_host_uvc/cmake_install.cmake",
-		"C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/esp-idf/main/cmake_install.cmake"
+		"C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/esp-idf/main/cmake_install.cmake",
+		"C:/Users/herobib/Desktop/Project1-SUAI/code/srcCode/build/esp-idf/pca9685/cmake_install.cmake"
 	],
 	"Parallel" : false
 }
