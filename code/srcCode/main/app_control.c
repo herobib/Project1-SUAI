@@ -59,7 +59,17 @@ static void move(float x, float y)
 {
     int base = (int)(255.0f * sqrtf(x * x + y * y));
     int a = base, b = base;
+    int angle=(int)(atan2f(y, x) * 180.0f / M_PI);
 
+    
+    if(angle >150 || angle<-150){
+        set_pwm(0, 255); set_pwm(1, 0); set_pwm(2, 0); set_pwm(3, 255);
+        return;
+    }
+    if(angle <30 && angle>-30){
+        set_pwm(0, 0); set_pwm(1,255); set_pwm(2, 255); set_pwm(3, 0);
+        return;
+    }
     if (y != 0) {
         if (x > 0)      a = (int)(a * (1 - x));
         else if (x < 0) b = (int)(b * (1 + x));
@@ -70,7 +80,7 @@ static void move(float x, float y)
     } else if (y < 0) {
         set_pwm(0, 0); set_pwm(1, a); set_pwm(2, 0); set_pwm(3, b);
     } else {
-        for (int i = 0; i < 4; i++) set_pwm(i, 255);   // торможение, как в оригинале
+        for (int i = 0; i < 4; i++) set_pwm(i, 255); 
     }
 }
 
