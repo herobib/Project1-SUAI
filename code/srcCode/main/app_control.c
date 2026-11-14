@@ -120,12 +120,16 @@ void app_control_handle_text(const char *data, size_t len)
                 manPortId=act[4]-'1';
             }
             ESP_LOGI(TAG, "module %c = %d", act[4], val);
-        } else if (strncmp(act, "man", 3) == 0 && act[3] >= '1' && act[3] <= '3' && act[4] == '\0') {
-            const cJSON *v = cJSON_GetObjectItem(root, "angle");
-            int Id=atoi(&act[3]);
-            int val = cJSON_IsString(v) ? atoi(v->valuestring)
-                    : cJSON_IsNumber(v) ? v->valueint : -1;
-            manipulator_angle[Id - 1] = val;
+        } else if (strcmp(act, "man") == 0) {
+            const cJSON *v1 = cJSON_GetObjectItem(root, "angle1");
+            const cJSON *v2 = cJSON_GetObjectItem(root, "angle2");
+            const cJSON *v3 = cJSON_GetObjectItem(root, "angle3");
+            manipulator_angle[0] = cJSON_IsString(v1) ? atoi(v1->valuestring)
+                    : cJSON_IsNumber(v1) ? v1->valueint : -1;
+            manipulator_angle[1] = cJSON_IsString(v2) ? atoi(v2->valuestring)
+                    : cJSON_IsNumber(v2) ? v2->valueint : -1;
+            manipulator_angle[2] = cJSON_IsString(v3) ? atoi(v3->valuestring)
+                    : cJSON_IsNumber(v3) ? v3->valueint : -1;     
             ESP_LOGI(TAG, "manipulator angles: %d %d %d", manipulator_angle[0], manipulator_angle[1], manipulator_angle[2]);
             servo_set_possition(manPortId, manipulator_angle, compres);
         } else if (strcmp(act, "compress")==0) {

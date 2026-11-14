@@ -5,11 +5,25 @@ import { CameraStream } from './CameraStream.tsx';
 import type { IJoystickUpdateEvent } from 'react-joystick-component/build/lib/Joystick';
 import { ensureHuffman } from './huffman.ts'
 import { useGamepad } from './useGamepad.ts'
+import { GamepadBindDialog, type BindField } from './GamepadBindDialog';
+
+const BIND_FIELDS: BindField[] = [
+  { label: 'Правый стик право/лево', kind: 'axis' },
+  { label: 'Правый стик вверх/вниз', kind: 'axis' },
+  { label: 'Левый стик вверх/вниз', kind: 'axis' },
+  { label: 'R2 (сжать):', kind: 'button' },
+  { label: 'L2 (режим горизонталь):', kind: 'button' },
+  { label: 'R1 (клешня наверх):', kind: 'button' },
+  { label: 'L1 (клешня вниз):', kind: 'button' },
+  { label: 'Y (первое колено вверх):', kind: 'button' },
+  { label: 'A (первое колено вниз):', kind: 'button' },
+  { label: 'B (второе колено вверх):', kind: 'button' },
+  { label: 'X (второе колено вниз):', kind: 'button' },
+];
 
 import './App.css'
 
 function App() {
-
   const MaxAngle1=180
   const MinAngle1=0
   const MaxAngle2=180
@@ -21,119 +35,46 @@ function App() {
 
   const modes = {'Пусто':'0','Ковш':'1', 'Манипулятор':'2'};
 
-  const ModuleSelect1 = (selectedMode: string) => {
+  const SendModule=(id:number, selectedMode:string)=>{
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'drop1', value: modes[selectedMode as keyof typeof modes] });
+      const command = JSON.stringify({ action: `drop${id+1}`, value: modes[selectedMode as keyof typeof modes] });
       wsRef.current.send(command);
       console.log('Отправлена команда:', command);
     }
     if(selectedMode=='Манипулятор'){
         setManipulatorConnected(prevState => {
           const newState = [...prevState];
-          newState[0] = true;
+          newState[id] = true;
           return newState;
         });
       }
       else{
         setManipulatorConnected(prevState => {
           const newState = [...prevState];
-          newState[0] = false;
+          newState[id] = false;
           return newState;
         });
       };
-    console.log('1, режим:', modes[selectedMode as keyof typeof modes]);
+    console.log(`${id+1}, режим:`, modes[selectedMode as keyof typeof modes]);
+  }
+
+  const ModuleSelect1 = (selectedMode: string) => {
+    SendModule(0,selectedMode);
   };
   const ModuleSelect2 = (selectedMode: string) => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'drop2', value: modes[selectedMode as keyof typeof modes] });
-      wsRef.current.send(command);
-      console.log('Отправлена команда:', command);
-    }
-    if(selectedMode=='Манипулятор'){
-        setManipulatorConnected(prevState => {
-          const newState = [...prevState];
-          newState[1] = true;
-          return newState;
-        });
-      }
-      else{
-        setManipulatorConnected(prevState => {
-          const newState = [...prevState];
-          newState[1] = false;
-          return newState;
-        });
-      };
-    console.log('2, режим:', modes[selectedMode as keyof typeof modes]);
+    SendModule(1,selectedMode);
   };
   
   const ModuleSelect3 = (selectedMode: string) => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'drop3', value: modes[selectedMode as keyof typeof modes] });
-      wsRef.current.send(command);
-      console.log('Отправлена команда:', command);
-    }
-    if(selectedMode=='Манипулятор'){
-        setManipulatorConnected(prevState => {
-          const newState = [...prevState];
-          newState[2] = true;
-          return newState;
-        });
-      }
-      else{
-        setManipulatorConnected(prevState => {
-          const newState = [...prevState];
-          newState[2] = false;
-          return newState;
-        });
-      };
-    console.log('3, режим:', modes[selectedMode as keyof typeof modes]);
+    SendModule(2,selectedMode);
   };
   const ModuleSelect4 = (selectedMode: string) => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'drop4', value: modes[selectedMode as keyof typeof modes] });
-      wsRef.current.send(command);
-      console.log('Отправлена команда:', command);
-    }
-    if(selectedMode=='Манипулятор'){
-        setManipulatorConnected(prevState => {
-          const newState = [...prevState];
-          newState[3] = true;
-          return newState;
-        });
-      }
-      else{
-        setManipulatorConnected(prevState => {
-          const newState = [...prevState];
-          newState[3] = false;
-          return newState;
-        });
-      };
-    console.log('4, режим:', modes[selectedMode as keyof typeof modes]);
+    SendModule(3,selectedMode);
   };
   const ModuleSelect5 = (selectedMode: string) => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'drop5', value: modes[selectedMode as keyof typeof modes] });
-      wsRef.current.send(command);
-      console.log('Отправлена команда:', command);
-    }
-    if(selectedMode=='Манипулятор'){
-        setManipulatorConnected(prevState => {
-          const newState = [...prevState];
-          newState[4] = true;
-          return newState;
-        });
-      }
-      else{
-        setManipulatorConnected(prevState => {
-          const newState = [...prevState];
-          newState[4] = false;
-          return newState;
-        });
-      };
-    console.log('режим:', modes[selectedMode as keyof typeof modes]);
+    SendModule(4,selectedMode);
   };
-  
-  
+    
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [latestFrame, setLatestFrame] = useState<Blob | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
@@ -174,6 +115,43 @@ function App() {
   return () => ws.close();
 }, []);
 
+useEffect(() => {
+  let raf = 0, lastSent = 0, lx = 0, ly = 0;
+  const tick = (now: number) => {
+    const pad = Array.from(navigator.getGamepads()).find((g): g is Gamepad => g !== null);
+    if (pad && !bindOpenRef.current) {                 // пока окно открыто, робота не двигаем
+      const [ix, iy] = bindsRef.current;
+      const dz = (v: number) => (Math.abs(v) < 0.08 ? 0 : v);
+      const x = ix >= 0 ? dz(pad.axes[ix] ?? 0) : 0;
+      const y = iy >= 0 ? -dz(pad.axes[iy] ?? 0) : 0;  // у геймпада "вверх" = -1, у вашего джойстика +1
+      if ((Math.abs(x - lx) > 0.02 || Math.abs(y - ly) > 0.02) && now - lastSent >= 50) {
+        lx = x; ly = y; lastSent = now;
+        sendJoystick(x, y);
+      }
+    }
+    raf = requestAnimationFrame(tick);
+  };
+  raf = requestAnimationFrame(tick);
+  return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const [bindOpen, setBindOpen] = useState(false);
+  const [binds, setBinds] = useState<number[]>(() => {
+    try { return JSON.parse(localStorage.getItem('gamepad-binds') ?? '') as number[]; }
+    catch { return [0, 1]; }
+  });
+  const bindsRef = useRef(binds);
+  const bindOpenRef = useRef(bindOpen);
+  useEffect(() => { bindsRef.current = binds; }, [binds]);
+  useEffect(() => { bindOpenRef.current = bindOpen; }, [bindOpen]);
+
+  const saveBinds = (v: number[]) => {
+    setBinds(v);
+    console.log(v);
+    try { localStorage.setItem('gamepad-binds', JSON.stringify(v)); } catch { /* не критично */ }
+  };
+
+
   const handleJoystickMove = (event: IJoystickUpdateEvent) => {
     if (event.x !== null && event.y !== null) sendJoystick(event.x, event.y);
     console.log(`X: ${event.x}, Y: ${event.y}`);
@@ -193,6 +171,7 @@ function App() {
     }
     console.log(`X: ${x}, Y: ${y}`);
   };
+
   const SendCamAngle = (angle: number) => {
     SetCamAngle(angle);
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
@@ -202,6 +181,7 @@ function App() {
     }
     console.log(`CamAngle: ${camAngle}`);
   };
+
   const SendCompress = (state: boolean) => {
     SetCompressState(state);
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
@@ -221,18 +201,13 @@ function App() {
   }
   const SendSocketAngles=()=>{
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      let command = JSON.stringify({ action: 'man1', angle:manAngle1});
-      wsRef.current.send(command);
-      command = JSON.stringify({ action: 'man2', angle:manAngle2});
-      wsRef.current.send(command);
-      command = JSON.stringify({ action: 'man3', angle:manAngle3});
+      let command = JSON.stringify({ action: 'man', angle1:manAngle1,angle2:manAngle2,angle3:manAngle3});
       wsRef.current.send(command);
       console.log('Отправлены углы', manAngle1,manAngle2,manAngle3);
     }
   }
 
-  const gamepadConnected = useGamepad(sendJoystick,SendCamAngle,SendCompress,SendAngles,MinCamAngle,MaxCamAngle,MinAngle1,MaxAngle1,MinAngle2,MaxAngle2,MinAngle3,MaxAngle3);
-
+  const gamepadConnected = useGamepad(binds,sendJoystick,SendCamAngle,SendCompress,SendAngles,MinCamAngle,MaxCamAngle,MinAngle1,MaxAngle1,MinAngle2,MaxAngle2,MinAngle3,MaxAngle3);
 
   const manAngle1Handler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.valueAsNumber;
@@ -250,6 +225,7 @@ function App() {
     }
     SendSocketAngles();
   };
+
   const manAngle2Handler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.valueAsNumber;
     if(horizontalEnState){
@@ -266,6 +242,7 @@ function App() {
     }
     SendSocketAngles();
   };
+
   const manAngle3Handler = (event: React.ChangeEvent<HTMLInputElement>) => {
     SetManAngle3(event.target.valueAsNumber);
     SendSocketAngles();
@@ -291,6 +268,14 @@ function App() {
           <p className="statusText">Status: {isConnected ? 'connected' : 'disconnected'}</p>
           <p className="statusText">Gamepad: {gamepadConnected ? 'connected' : 'disconnected'}</p>
           <p className="statusText">Горизонталь: {horizontalEnState?'вкл':'выкл'}</p>
+          <button onClick={() => { sendJoystick(0, 0); setBindOpen(true); }} className="statusText" style={{height:'10px', padding:'0px', marginLeft:'5px'}}>Бинд геймпада</button>
+            <GamepadBindDialog
+              open={bindOpen}
+              fields={BIND_FIELDS}
+              value={binds}
+              onSave={saveBinds}
+              onClose={() => setBindOpen(false)}
+            />
         </div>
         <div className="ToolBar">
           <div className="changeTool">

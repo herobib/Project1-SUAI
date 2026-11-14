@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-export function useGamepad(
+export function useGamepad(bindsAxes:number[],
   onAxes: (x: number, y: number) => void,
   onCamServo: (angle:number)=>void,
   onCompress: (state:boolean)=>void,
@@ -39,16 +39,10 @@ export function useGamepad(
 
     const tick = () => {
       const pad = Array.from(navigator.getGamepads()).find(p => p && p.connected);
-      // if (pad) {
-      //   console.log(pad.mapping || 'non-standard', pad.id, pad.axes.map(a => a.toFixed(2)).join(' '));
-      // } //лог для выяснения осей геймпада и стрелочек
-      // if (pad) {
-      //   console.log(pad.mapping || 'non-standard', pad.id, pad.buttons.map(b => b.pressed ? '1' : '0').join(''));
-      // } //лог для выяснения кнопок геймпада
       const isConnected = !!pad;
       if (isConnected !== wasConnected) {
         wasConnected = isConnected;
-        setConnected(isConnected); // только при смене статуса
+        setConnected(isConnected);
         if (!isConnected && (last.x !== 0 || last.y !== 0)) {
           last = { x: 0, y: 0 };
           cbRef.current(0, 0);
@@ -56,17 +50,17 @@ export function useGamepad(
       }
 
       if (pad) {
-        let x = pad.axes[2] ?? 0;
-        let y = -(pad.axes[5] ?? 0);
-        let cam=-(pad.axes[1] ?? 0);
-        let compress=pad.buttons[9].pressed??0;
-        let BY=pad.buttons[4].pressed??0;
-        let BA=pad.buttons[0].pressed??0;
-        let BX=pad.buttons[3].pressed??0;
-        let BB=pad.buttons[1].pressed??0;
-        let Strelochki=pad.axes[9]??0;
-
-        let Bhor=pad.buttons[8].pressed??0;
+        let x = pad.axes[bindsAxes[0]] ?? 0;
+        let y = -(pad.axes[bindsAxes[1]] ?? 0);
+        let cam=-(pad.axes[bindsAxes[2]] ?? 0);
+        let compress=pad.buttons[bindsAxes[3]].pressed??0;
+        let BY=pad.buttons[bindsAxes[7]].pressed??0;
+        let BA=pad.buttons[bindsAxes[8]].pressed??0;
+        let BX=pad.buttons[bindsAxes[10]].pressed??0;
+        let BB=pad.buttons[bindsAxes[9]].pressed??0;
+        let BR1=pad.buttons[bindsAxes[5]].pressed??0;
+        let BL1=pad.buttons[bindsAxes[6]].pressed??0;
+        let Bhor=pad.buttons[bindsAxes[4]].pressed??0;
 
         if (Math.hypot(x, y) < deadzone) { x = 0; y = 0; }
         x = Math.round(x * scale * 100) / 100;
@@ -152,13 +146,13 @@ export function useGamepad(
             }
           }
         }
-        if(Strelochki==-1.0){
+        if(BR1){
           if(Angle3+1<=maxAngle3 && !horizontal){
             Angle3+=1;
             manAnglesRef.current([Angle1,Angle2,Angle3],horizontal);
           }
         }
-        else if(Strelochki<0.2 && Strelochki>0){
+        else if(BL1){
           if(Angle3-1>=minAngle3 && !horizontal){
             Angle3-=1;
             manAnglesRef.current([Angle1,Angle2,Angle3],horizontal);
