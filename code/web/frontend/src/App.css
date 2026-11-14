@@ -1,10 +1,10 @@
 .header{
-  height: 17vh;
+  height: 19vh;
   background-color: #acacac;
   width: 100wh;
 }
 .StatusBar{
-  height: 15px;
+  height: 18px;
   display: flex;
   align-items: center;
 }
@@ -14,7 +14,7 @@
 }
 
 .mainDiv{
-  height: 80vh;
+  height: 82vh;
   background-color: #909090;
   width: 100wh;
   display: flex;

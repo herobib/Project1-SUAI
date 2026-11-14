@@ -10,7 +10,7 @@
     "clangd.arguments": [
       "--background-index",
       "--query-driver=**",
-      "--compile-commands-dir=c:\\Users\\herobib\\Desktop\\cameraexcemple\\esp-iot-solution\\examples\\usb\\host\\usb_camera_mic_spk\\build"
+      "--compile-commands-dir=c:\\Users\\herobib\\Desktop\\Project1-SUAI\\code\\srcCode\\build"
     ],
     "idf.flashType": "UART",
     "idf.port": "COM3"

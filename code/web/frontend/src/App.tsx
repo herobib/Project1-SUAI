@@ -268,7 +268,7 @@ useEffect(() => {
           <p className="statusText">Status: {isConnected ? 'connected' : 'disconnected'}</p>
           <p className="statusText">Gamepad: {gamepadConnected ? 'connected' : 'disconnected'}</p>
           <p className="statusText">Горизонталь: {horizontalEnState?'вкл':'выкл'}</p>
-          <button onClick={() => { sendJoystick(0, 0); setBindOpen(true); }} className="statusText" style={{height:'10px', padding:'0px', marginLeft:'5px'}}>Бинд геймпада</button>
+          <button onClick={() => { sendJoystick(0, 0); setBindOpen(true); }} className="statusText" style={{height:'13px', padding:'0px', marginLeft:'5px'}}>Бинд геймпада</button>
             <GamepadBindDialog
               open={bindOpen}
               fields={BIND_FIELDS}
@@ -276,6 +276,9 @@ useEffect(() => {
               onSave={saveBinds}
               onClose={() => setBindOpen(false)}
             />
+            <button onClick={() => document.documentElement.requestFullscreen()} className="statusText" style={{height:'13px', padding:'0px', marginLeft:'5px'}}>
+              fullScreen
+            </button>
         </div>
         <div className="ToolBar">
           <div className="changeTool">

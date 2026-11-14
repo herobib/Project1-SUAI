@@ -8,6 +8,8 @@ It is educational project for SUAI. This is a tracked platform onto which variou
 - Code: C, on ESP-IDF framework, React TypeScript
 - 3D-models: SolidWorks2024(some 2025)
 - Microcontroller: ESP32S3-Devkit-C1 N8R8
+# How it use
+An instruction manual for the use and maintenance of the MTP has been written; please refer to the file in the `/assets/manual` file.
 # Project structure
 - `/code/SrcCode/Project` - ESP code
 - `/code/web/frontend` - web interface code
