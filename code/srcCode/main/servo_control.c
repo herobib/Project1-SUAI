@@ -132,7 +132,8 @@ void servo_set_possition(int portId, int angles[], bool compress)
         for (int k = 0; k < SERVOS_PER_PORT; k++) {
             servo_write_us(k, angle_to_us(k, a[k]));
         }
-    } else {
+    } 
+    else {
         if (!s_pca_ok) {
             ESP_LOGW(TAG, "PCA9685 недоступна, порт %d пропущен", portId);
             return;

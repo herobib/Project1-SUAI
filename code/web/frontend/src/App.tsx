@@ -4,6 +4,7 @@ import { JoistikComponent } from './Joistik.tsx'
 import { CameraStream } from './CameraStream.tsx';
 import type { IJoystickUpdateEvent } from 'react-joystick-component/build/lib/Joystick';
 import { ensureHuffman } from './huffman.ts'
+import { useGamepad } from './useGamepad.ts'
 
 import './App.css'
 
@@ -132,6 +133,7 @@ function App() {
     console.log('режим:', modes[selectedMode as keyof typeof modes]);
   };
   
+  
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [latestFrame, setLatestFrame] = useState<Blob | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
@@ -140,10 +142,11 @@ function App() {
   const [manAngle1,SetManAngle1]=useState<number>((MaxAngle1-MinAngle1)/2);
   const [manAngle2,SetManAngle2]=useState<number>((MaxAngle2-MinAngle2)/2);
   const [manAngle3,SetManAngle3]=useState<number>((MaxAngle3-MinAngle3)/2);
-  const [camAngle,SetCanAngle]=useState<number>((MaxCamAngle-MinCamAngle)/2);
+  const [camAngle,SetCamAngle]=useState<number>((MaxCamAngle-MinCamAngle)/2);
   const [horizontalEnState,SetHorizontalState]=useState<boolean>(false);
   const [compressState,SetCompressState]=useState<boolean>(false);
-
+  const [bindingMode,Setbindingmode]=useState<boolean>(false);
+  
 
   useEffect(() => {
     const ws = new WebSocket(`ws://${location.host}/camera_ws`);
@@ -168,37 +171,69 @@ function App() {
     const jpeg = ensureHuffman(new Uint8Array(buf, HEADER, len));
     setLatestFrame(new Blob([jpeg as BlobPart], { type: 'image/jpeg' }));
   };
-
   return () => ws.close();
 }, []);
 
   const handleJoystickMove = (event: IJoystickUpdateEvent) => {
-    if (event.x !== null && event.y !== null) {
-      setCoordinates({
-        x: event.x,
-        y: event.y,
-      });
-      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'joistik', x: event.x, y: event.y});
-      wsRef.current.send(command);
-      console.log('Отправлена команда:', command);
-    }
-      console.log(`X: ${event.x}, Y: ${event.y}`);
-    }
+    if (event.x !== null && event.y !== null) sendJoystick(event.x, event.y);
+    console.log(`X: ${event.x}, Y: ${event.y}`);
   };
 
-  // Функция срабатывает, когда отпускаем джойстик
   const handleJoystickStop = () => {
     setCoordinates({ x: 0, y: 0 });
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'joistik', x: 0, y: 0});
+    sendJoystick(0, 0);
+  };
+
+  const sendJoystick = (x: number, y: number) => {
+    setCoordinates({ x, y });
+     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      const command = JSON.stringify({ action: 'joistik', x: x , y: y});
       wsRef.current.send(command);
       console.log('Отправлена команда:', command);
     }
+    console.log(`X: ${x}, Y: ${y}`);
   };
-  const handleCheckBoxClick = () => {
-    console.log('CheckBox clicked');
+  const SendCamAngle = (angle: number) => {
+    SetCamAngle(angle);
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      const command = JSON.stringify({ action: 'cam', angle:camAngle});
+      wsRef.current.send(command);
+      console.log('Отправлена команда:', command);
+    }
+    console.log(`CamAngle: ${camAngle}`);
+  };
+  const SendCompress = (state: boolean) => {
+    SetCompressState(state);
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      const command = JSON.stringify({ action: 'compress', state:compressState});
+      wsRef.current.send(command);
+      console.log('Отправлена команда:', command);
+    }
+    console.log(`comperss click: ${compressState}`);
+  };
+  const SendAngles=(angles:number[],horSt:boolean)=>{
+    SetHorizontalState(horSt);
+    SetManAngle1(angles[0]);
+    SetManAngle2(angles[1]);
+    SetManAngle3(angles[2]);
+    SendSocketAngles();
+    console.log(angles)
   }
+  const SendSocketAngles=()=>{
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      let command = JSON.stringify({ action: 'man1', angle:manAngle1});
+      wsRef.current.send(command);
+      command = JSON.stringify({ action: 'man2', angle:manAngle2});
+      wsRef.current.send(command);
+      command = JSON.stringify({ action: 'man3', angle:manAngle3});
+      wsRef.current.send(command);
+      console.log('Отправлены углы', manAngle1,manAngle2,manAngle3);
+    }
+  }
+
+  const gamepadConnected = useGamepad(sendJoystick,SendCamAngle,SendCompress,SendAngles,MinCamAngle,MaxCamAngle,MinAngle1,MaxAngle1,MinAngle2,MaxAngle2,MinAngle3,MaxAngle3);
+
+
   const manAngle1Handler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.valueAsNumber;
     if(horizontalEnState){
@@ -213,16 +248,7 @@ function App() {
     else{
       SetManAngle1(event.target.valueAsNumber);
     }
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'man1', angle:manAngle1});
-      wsRef.current.send(command);
-      console.log('Отправлена команда:', command);
-      if(horizontalEnState){
-        const command = JSON.stringify({ action: 'man3', angle:manAngle3});
-        wsRef.current.send(command);
-        console.log('Отправлена команда:', command);
-      }
-    }
+    SendSocketAngles();
   };
   const manAngle2Handler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.valueAsNumber;
@@ -238,52 +264,33 @@ function App() {
     else{
       SetManAngle2(event.target.valueAsNumber);
     }
-     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'man2', angle:manAngle2});
-      wsRef.current.send(command);
-      console.log('Отправлена команда:', command);
-      if(horizontalEnState){
-        const command = JSON.stringify({ action: 'man3', angle:manAngle3});
-        wsRef.current.send(command);
-        console.log('Отправлена команда:', command);
-      }
-    }
+    SendSocketAngles();
   };
   const manAngle3Handler = (event: React.ChangeEvent<HTMLInputElement>) => {
-     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'man3', angle:manAngle3});
-      wsRef.current.send(command);
-      console.log('Отправлена команда:', command);
-    }
     SetManAngle3(event.target.valueAsNumber);
+    SendSocketAngles();
   };
+
   const camAngleHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'cam', angle:camAngle});
-      wsRef.current.send(command);
-      console.log('Отправлена команда:', command);
-    }
-    SetCanAngle(event.target.valueAsNumber);
+    SendCamAngle(event.target.valueAsNumber);
   };
+
   const horizontalEnStatehandler=(event: React.ChangeEvent<HTMLInputElement>) => {
     SetHorizontalState(event.target.checked)
     console.log("horizontal press")
   };
   const compressStatehandler=() => {
-    SetCompressState(!compressState)
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      const command = JSON.stringify({ action: 'compress', state:compressState});
-      wsRef.current.send(command);
-      console.log('Отправлена команда:', command);
-    }
-    console.log("comperss click")
+    SendCompress(!compressState)
   };
+  
   return (
     <>
      <div>
       <div className="header">
         <div className="StatusBar">
-          <p className="statusText">status: {isConnected ? 'connected' : 'disconnected'}</p>
+          <p className="statusText">Status: {isConnected ? 'connected' : 'disconnected'}</p>
+          <p className="statusText">Gamepad: {gamepadConnected ? 'connected' : 'disconnected'}</p>
+          <p className="statusText">Горизонталь: {horizontalEnState?'вкл':'выкл'}</p>
         </div>
         <div className="ToolBar">
           <div className="changeTool">
@@ -309,7 +316,7 @@ function App() {
         </div>
       </div>
       <div className="mainDiv">
-        {manipulatorConnected.some((v)=> v) ? 
+        {(manipulatorConnected.some((v)=> v)&& !gamepadConnected) ? 
         <div className="manipulatorDiv">
           <div className="manipulatorControl">
             <div style={{margin:'10px',minWidth:'30px'}}>
@@ -330,15 +337,20 @@ function App() {
               <input checked={horizontalEnState} onChange={horizontalEnStatehandler} type="checkbox"/>
               <p style={{color:'black', fontSize:'15px'}}>Горизонталь</p>
             </div>  
-            <button className='compressButton' onClick={compressStatehandler}>{compressState ? "Сжать":"Разжать"}
+            <button className='compressButton' onClick={compressStatehandler}>{!compressState ? "Сжать":"Разжать"}
             </button>         
           </div>
         </div>
         :null}
+
         <div className="cameraDiv">
+          {gamepadConnected ==false ? 
           <input value={camAngle} onChange={camAngleHandler} type="range" className="range" style={{minWidth:"30px"}} min={MinCamAngle} max={MaxCamAngle}  />
+          :null}
           <CameraStream frame={latestFrame} isLive={isConnected}/>
         </div>
+
+        {gamepadConnected ==false ? 
         <div className="joistikDiv">
           <div style={{marginBottom: '40px', textAlign: 'center', fontSize: '18px' }}>
           </div>
@@ -351,11 +363,11 @@ function App() {
             />
           </div>
         </div>
+      :null}
       </div>
      </div>
     </>
   )
 }
-
 
 export default App

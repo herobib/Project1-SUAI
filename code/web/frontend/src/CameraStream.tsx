@@ -41,7 +41,7 @@ export const CameraStream: React.FC<CameraStreamProps> = ({ frame, isLive }) => 
         ref={canvasRef}      
         style={{ 
           width: '100%', 
-          maxWidth: '450px', 
+          maxWidth: '95%', 
           backgroundColor: '#222', 
           borderRadius: '8px',
           height:'100%'
